@@ -1,0 +1,20 @@
+version: '1.0'
+services:
+    # WebGoat
+    webgoat:
+        container_name: webgoat
+        image: webgoat/webgoat
+
+    # Cloudflared Tunnel - WebGoat
+    cftunnel:
+        container_name: cftunnel_goat
+        image: cloudflare/cloudflared
+        restart: unless-stopped
+        command: tunnel --url http://webgoat:8080
+
+    # Cloudflared Tunnel - WebWolf
+    cftunnel:
+        container_name: cftunnel_wolf
+        image: cloudflare/cloudflared
+        restart: unless-stopped
+        command: tunnel --url http://webgoat:9090
