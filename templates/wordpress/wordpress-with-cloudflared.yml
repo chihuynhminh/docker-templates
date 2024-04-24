@@ -1,0 +1,39 @@
+version: '3.1'
+
+services:
+  # Wordpress
+  wordpress:
+    container_name: wordpress
+    image: wordpress
+    ports:
+      - 8080:80
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: exampleuser
+      WORDPRESS_DB_PASSWORD: examplepass
+      WORDPRESS_DB_NAME: exampledb
+    volumes:
+      - wordpress:/var/www/html
+
+  # MySQL DB
+  db:
+    container_name: db
+    image: mysql
+    environment:
+      MYSQL_DATABASE: exampledb
+      MYSQL_USER: exampleuser
+      MYSQL_PASSWORD: examplepass
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - db:/var/lib/mysql
+
+  # Cloudflared Tunnel
+  cftunnel:
+    container_name: cftunnel
+    image: cloudflare/cloudflared
+    restart: unless-stopped
+    command: tunnel --url http://wordpress
+
+volumes:
+  wordpress:
+  db:
